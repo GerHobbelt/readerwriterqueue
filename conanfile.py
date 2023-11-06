@@ -14,22 +14,21 @@ class ReaderWriterQueue(ConanFile):
     description = "A fast single-producer, single-consumer lock-free queue for C++"
     topics = ("cpp11", "cpp14", "cpp17", "queue", "lock-free")
     license = "BSD-2-Clause"
-    exports = "LICENSE.md"
-    exports_sources = "CMakeLists.txt", "*.h"
-    no_copy_source = True
+    exports_sources = "CMakeLists.txt", "*.h", "LICENSE.md"
     settings = "os"
 
     def layout(self):
-        basic_layout(self)
+        basic_layout(self, src_folder=".")
 
     def build(self):
         pass
 
     def package(self):
-        self.copy("*.h")
+        copy(self, "LICENSE.md", src=self.source_folder, dst=os.path.join(self.package_folder, "licenses"))
+        copy(self, "*.h", src=self.source_folder, dst=os.path.join(self.package_folder, "include", "readerwriterqueue"),
+             excludes=["benchmarks", "tests"])
         
     def package_info(self):
-        self.cpp_info.includedirs = []
         self.cpp_info.bindirs = []
         self.cpp_info.libdirs = []
         if self.settings.os in ["Linux", "FreeBSD"]:
